@@ -1,4 +1,4 @@
-define(["underscore", "moment", "crossfilter", "dc", "d3",
+define(["underscore", "moment", "crossfilter2", "dc", "d3",
     "d3qb/js/defaults", "d3qb/js/colors", "d3qb/js/charts", "d3qb/js/reducers", "d3qb/js/valuers"], function (_, moment, crossfilter, dc, d3, defaults, colors, Charts, Reducers, Valuers) {
 
     //"/js/dc-addons/dist/dc-addons.js",

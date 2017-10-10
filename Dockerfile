@@ -17,6 +17,6 @@ COPY js js
 COPY demo demo
 
 # Launch NodeJS
-CMD ["npm","run boot"]
+CMD ["npm", "start"]
 
 EXPOSE 3002

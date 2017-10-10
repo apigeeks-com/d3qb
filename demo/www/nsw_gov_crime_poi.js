@@ -24,9 +24,9 @@ require.config({
         dc: "/bower_components/dcjs/dc",
         d3: "/bower_components/d3/d3",
 
-        defaults: "defaults",
         qb: "d3qb/js/qb",
         qbs: "d3qb/js/qbs",
+        defaults: "d3qb/js/defaults",
         qbd: "d3qb/js/qbd"
 
     },
@@ -37,6 +37,9 @@ require.config({
         },
         "crossfilter": {
             exports : 'crossfilter'
+        },
+        "crossfilter2": {
+            exports : 'crossfilter2'
         },
         "colorbrewer": {
             exports : 'colorbrewer'
