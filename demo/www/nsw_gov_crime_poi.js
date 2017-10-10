@@ -25,9 +25,9 @@ require.config({
         d3: "/bower_components/d3/d3",
 
         defaults: "defaults",
-        qb: "meta4qb/js/qb",
-        qbs: "meta4qb/js/qbs",
-        qbd: "meta4qb/js/qbd"
+        qb: "d3qb/js/qb",
+        qbs: "d3qb/js/qbs",
+        qbd: "d3qb/js/qbd"
 
     },
     wrapShim: true,
@@ -200,5 +200,5 @@ requirejs(["qbd"], function(qbd) {
         }]
     });
 
-    console.log("Started: %o", qbd);
+    console.log("[d3qb] started: %o", qbd);
 });

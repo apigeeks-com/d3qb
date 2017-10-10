@@ -1,17 +1,17 @@
 define(["underscore",
-    "meta4qb/js/charts/bar",
-    "meta4qb/js/charts/bubble",
-    "meta4qb/js/charts/column",
-    "meta4qb/js/charts/count",
-    "meta4qb/js/charts/donut",
-    "meta4qb/js/charts/geo",
-    "meta4qb/js/charts/line",
-    "meta4qb/js/charts/pie",
-    "meta4qb/js/charts/row",
-    "meta4qb/js/charts/scatter",
-    "meta4qb/js/charts/series",
-    "meta4qb/js/charts/table",
-    "meta4qb/js/charts/time"
+    "d3qb/js/charts/bar",
+    "d3qb/js/charts/bubble",
+    "d3qb/js/charts/column",
+    "d3qb/js/charts/count",
+    "d3qb/js/charts/donut",
+    "d3qb/js/charts/geo",
+    "d3qb/js/charts/line",
+    "d3qb/js/charts/pie",
+    "d3qb/js/charts/row",
+    "d3qb/js/charts/scatter",
+    "d3qb/js/charts/series",
+    "d3qb/js/charts/table",
+    "d3qb/js/charts/time"
 ], function (_, Bar, Bubble, Column, Count, Donut, Geo, Line, Pie, Row, Scatter, Series, Table, Time) {
 
     return function(qb) {

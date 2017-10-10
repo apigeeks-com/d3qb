@@ -1,4 +1,4 @@
-define(["underscore", "dc", "meta4qb/js/chart" ], function (_, dc, chart) {
+define(["underscore", "dc", "d3qb/js/chart" ], function (_, dc, chart) {
 
     // chart type definition
 

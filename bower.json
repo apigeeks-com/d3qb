@@ -1,5 +1,5 @@
 {
-  "name": "meta4qb",
+  "name": "d3qb",
   "version": "0.5.4",
   "description": "A declarative toolkit for building micro dashboards",
   "main": "js/lib/qbd.js",
@@ -28,7 +28,7 @@
     "dc-addons": "^0.13.5",
     "bootstrap": "^3.3.7",
     "crossfilter": "^1.3.12",
-    "crossfilter2": "^1.4.1"
+    "crossfilter2": "^1.4.3"
   },
   "resolutions": {
     "dcjs": "^2.0.0"

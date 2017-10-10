@@ -1,7 +1,10 @@
 FROM node:alpine
 MAINTAINER Troven <cto@troven.com.au>
 
-COPY package.json package.json  
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh
+
+COPY package.json package.json
 RUN npm install
 RUN npm install --global bower
 
@@ -14,6 +17,6 @@ COPY js js
 COPY demo demo
 
 # Launch NodeJS
-CMD ["npm","run boot"]  
+CMD ["npm","run boot"]
 
 EXPOSE 3002

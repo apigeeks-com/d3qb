@@ -1,5 +1,5 @@
 define(["underscore", "moment", "crossfilter", "dc", "d3",
-    "meta4qb/js/defaults", "meta4qb/js/colors", "meta4qb/js/charts", "meta4qb/js/reducers", "meta4qb/js/valuers"], function (_, moment, crossfilter, dc, d3, defaults, colors, Charts, Reducers, Valuers) {
+    "d3qb/js/defaults", "d3qb/js/colors", "d3qb/js/charts", "d3qb/js/reducers", "d3qb/js/valuers"], function (_, moment, crossfilter, dc, d3, defaults, colors, Charts, Reducers, Valuers) {
 
     //"/js/dc-addons/dist/dc-addons.js",
     if (!dc) throw "missing dc";

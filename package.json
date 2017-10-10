@@ -1,8 +1,9 @@
 {
-  "name": "meta4qb",
+  "name": "d3qb",
   "version": "0.5.4",
   "description": "A declarative toolkit for building micro dashboards",
   "main": "demo.index.js",
+  "repository": "git@github.com:apigeeks-com/d3qb.git",
   "directories": {
     "test": "test"
   },
