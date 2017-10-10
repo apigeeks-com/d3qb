@@ -1,5 +1,5 @@
 git add -A .
-git commit -m 'release'
+git commit -m 'pre-release'
 
 npm version patch
 CURRENT_VERSION=$(npm run version --silent)
