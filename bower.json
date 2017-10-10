@@ -1,0 +1,36 @@
+{
+  "name": "meta4qb",
+  "version": "0.5.4",
+  "description": "A declarative toolkit for building micro dashboards",
+  "main": "js/lib/qbd.js",
+  "authors": [
+    "Troven Software <cto@troven.com.au>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "colorbrewer": "^1.0.0",
+    "requirejs": "^2.2.0",
+    "backbone": "^1.3.0",
+    "jquery": "^3.0.0",
+    "underscore": "^1.8.3",
+    "backbone.marionette": "^2.4.7",
+    "d3": "^3.5.17",
+    "dcjs": "^2.0.0",
+    "moment": "^2.14.1",
+    "dc-addons": "^0.13.5",
+    "bootstrap": "^3.3.7",
+    "crossfilter": "^1.3.12",
+    "crossfilter2": "^1.4.1"
+  },
+  "resolutions": {
+    "dcjs": "^2.0.0"
+  }
+}

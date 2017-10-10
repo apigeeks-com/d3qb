@@ -1,0 +1,23 @@
+{
+  "name": "meta4qb",
+  "version": "0.5.4",
+  "description": "A declarative toolkit for building micro dashboards",
+  "main": "demo.index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "bower install && npm install && node demo/index.js",
+    "boot": "node demo/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "assert": "^1.4.1",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "lodash": "^4.13.1",
+    "path": "^0.12.7"
+  }
+}
