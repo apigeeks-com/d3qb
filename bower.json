@@ -1,6 +1,6 @@
 {
   "name": "d3qb",
-  "version": "0.5.4",
+  "version": "0.5.7",
   "description": "A declarative toolkit for building micro dashboards",
   "main": "js/lib/qbd.js",
   "authors": [
