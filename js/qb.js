@@ -249,7 +249,6 @@ define(["underscore", "moment", "crossfilter2", "dc", "d3",
                     slice.el = $chart = $("<div/>").addClass( qb.css("qb-chart") );
 
                     var $el = $(qb.options.el);
-                    $el.empty();
                     $chart.appendTo($el);
                     $chart.attr("id", slice.id);
                     console.log("[%s] Chart: %s -> %o", type, slice.id, _slice);
