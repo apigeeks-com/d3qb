@@ -6,4 +6,4 @@ npm version patch
 CURRENT_VERSION=$(npm run version --silent)
 git tag -a $CURRENT_VERSION -m "v$CURRENT_VERSION"
 git push origin --tags
-
+bower info d3qb
