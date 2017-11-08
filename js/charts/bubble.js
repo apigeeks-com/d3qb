@@ -25,6 +25,7 @@ define(["underscore", "dc", "d3qb/js/chart" ], function (_, dc, chart) {
 
                 chart.brushOn(slice.brushOn)
 
+                // TODO: implement
                 chart.radiusValueAccessor(function (p) {
                     return 10;
                 }).maxBubbleRelativeSize(0.3)

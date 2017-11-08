@@ -1,4 +1,4 @@
-define(["underscore"], function (_) {
+Fdefine(["underscore"], function (_) {
 
     return function(options, qb) {
 
@@ -8,9 +8,11 @@ define(["underscore"], function (_) {
                 qb.chart._sanityCheck(slice);
                 console.log("_configured: ", slice.header ? slice.header : "untitled", slice, qb.defaults.all, qb.defaults[type]);
 
+                // labels
                 if (slice.x && slice.x.label) chart.xAxisLabel(slice.x.label);
                 if (slice.y && slice.y.label) chart.yAxisLabel(slice.y.label);
 
+                // basic rendering
                 chart
                     .width(slice.width)
                     .height(slice.height)
@@ -18,34 +20,38 @@ define(["underscore"], function (_) {
                     .renderTitle(slice.renderTitle)
                     .transitionDuration(slice.transitionDuration);
 
-                if (slice.dimension) chart.dimension(slice.dimension)
-                slice.group && chart.group(slice.group)
+                // group by dimension
+                if (slice.dimension) chart.dimension(slice.dimension);
+                slice.group && chart.group(slice.group);
 
-                if (chart.colors) chart.colors(slice.colors || qb.options.colors)
+                // set the chart colour scheme
+                if (chart.colors) chart.colors(slice.colors || qb.options.colors);
 
-                if (slice.showControls === false) chart.turnOffControls()
+                // show filters / reset
+                if (slice.showControls === false) chart.turnOffControls();
                 else {
-                    chart.turnOnControls()
+                    chart.turnOnControls();
                     qb.chart._controls(chart);
                 }
 
-                if (_.isFunction(slice.filterPrinter)) chart.filterPrinter(slice.filterPrinter)
-                if (slice.renderlet) chart.renderlet(slice.renderlet)
+                if (_.isFunction(slice.filterPrinter)) chart.filterPrinter(slice.filterPrinter);
+                if (slice.renderlet) chart.renderlet(slice.renderlet);
 
                 var label = slice.label || slice.keyAccessor || slice.valueAccessor || function () {
-                        return "No Label"
-                    }
+                    return "No Label"
+                };
                 slice.renderLabel && chart.label(label);
 
                 var title = slice.title || function (d) {
-                        return label(d) + " = " + (slice.valueAccessor ? slice.valueAccessor(d) : d.value)
-                    }
+                    return label(d) + " = " + (slice.valueAccessor ? slice.valueAccessor(d) : d.value)
+                };
                 slice.renderTitle && chart.title(title);
 
-                console.log("Label & Title", label, title)
+                console.log("Label & Title", label, title);
 
-                if (slice.valueAccessor) chart.valueAccessor(slice.valueAccessor)
-                if (slice.keyAccessor) chart.keyAccessor(slice.keyAccessor)
+                // define how we pluck dimensions and measures from the dataset
+                if (slice.valueAccessor) chart.valueAccessor(slice.valueAccessor);
+                if (slice.keyAccessor) chart.keyAccessor(slice.keyAccessor);
 
                 // optionally handle 'top-n' filtering
                 if (slice.top) {
@@ -64,7 +70,7 @@ define(["underscore"], function (_) {
             },
 
             _controls: function (chart) {
-                var $c = (chart.root())
+                var $c = (chart.root());
                 console.log("_controls()", $c, chart)
 //			chart.select(".reset").on("click", function() {
 //					chart.filterAll();
@@ -74,33 +80,33 @@ define(["underscore"], function (_) {
             scale: {
                 time: function (chart, slice, axis) {
                     if (axis && axis != "x") throw "urn:oops:qb:scale:time:invalid-axis";
-                    slice.scale = slice.scale || {}
-                    var scale = slice.scale.time || {}
-                    axis = axis || "x"
+                    slice.scale = slice.scale || {};
+                    var scale = slice.scale.time || {};
+                    axis = axis || "x";
 
-                    scale.from = scale.from || new Date(2013, 1, 1)
-                    scale.to = scale.to || new Date()
+                    scale.from = scale.from || new Date(2013, 1, 1);
+                    scale.to = scale.to || new Date();
 
-                    var timescale = d3.time.scale().domain([scale.from, scale.to])
+                    var timescale = d3.time.scale().domain([scale.from, scale.to]);
 
-                    chart.x(timescale)
+                    chart.x(timescale);
                     // see https://github.com/mbostock/d3/wiki/Time-Intervals
-                    chart.xUnits(scale.units || d3.time.month)
+                    chart.xUnits(scale.units || d3.time.month);
 
-                    console.log("Timescale: ", chart, scale, timescale)
+                    console.log("Timescale: ", chart, scale, timescale);
                     return chart;
                 },
 
                 linear: function (chart, slice, axis) {
-                    slice.scale = slice.scale || {}
-                    var scale = slice.scale.linear || {}
-                    axis = axis || "y"
+                    slice.scale = slice.scale || {};
+                    var scale = slice.scale.linear || {};
+                    axis = axis || "y";
                     chart[axis](d3.scale.linear())
                 },
 
                 log: function (chart, slice, axis) {
-                    slice.scale = slice.scale || {}
-                    axis = axis || "y"
+                    slice.scale = slice.scale || {};
+                    axis = axis || "y";
                     chart[axis](d3.scale.log())
                 }
             },

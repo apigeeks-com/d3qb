@@ -32,7 +32,9 @@ define(["underscore"], function (_) {
                 }
             },
 
-            ratio: function (antecedent, consequent) {
+            ratio: function (meta) {
+                var antecedent = meta.antecedent, consequent = meta.consequent;
+
                 return {
                     add: function (answer, model) {
                         answer.count++;

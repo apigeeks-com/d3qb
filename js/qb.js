@@ -1,3 +1,8 @@
+/*
+    Represents a set of correlated charts
+
+ */
+
 define(["underscore", "moment", "crossfilter2", "dc", "d3",
     "d3qb/js/defaults", "d3qb/js/colors", "d3qb/js/charts", "d3qb/js/reducers", "d3qb/js/valuers"], function (_, moment, crossfilter, dc, d3, defaults, colors, Charts, Reducers, Valuers) {
 
@@ -18,11 +23,14 @@ define(["underscore", "moment", "crossfilter2", "dc", "d3",
             init: function(options) {
                 _.extend(this.options, options);
                 this.id = this.id || this.options.id || "qb_"+new Date().getMilliseconds();
+
+                this.options.filters = _.defaults({}, options.filters);
+
                 this.DEBUG = options.debug?true:false;
                 console.log("new QB( %s ): %o", this.id, this.options);
                 return this;
             },
-            options: { decimalPlaces: 2 , el: "body", data: {} },
+            options: { decimalPlaces: 2 , el: "body", data: {}, filters: {} },
             _labels: { daysOfWeek: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], monthsOfYear: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], weekOrWeekend: ["Weekday", "Weekend"] },
             _css: {
                 "qb-chart": "qb-chart panel panel-default",
@@ -227,6 +235,7 @@ define(["underscore", "moment", "crossfilter2", "dc", "d3",
 
             // draw(type$, measure$, byDimension$)
             // draw(type$, measure{})
+
             draw: function(type, _slice, _slice_by) {
                 if (!_slice) throw "urn:oops:qb:draw:missing:slice"
                 if (_slice&&_slice_by) _slice = qb.sliceBy(_slice,_slice_by); // quick draw
@@ -271,7 +280,7 @@ define(["underscore", "moment", "crossfilter2", "dc", "d3",
                     }
                 }
 
-                // bind reset/firr handlers
+                // bind reset/filter handlers
                 if ($chart.length && slice.showControls) {
                     $(".reset", $chart).hide().click(function() { chart.filterAll(); qb.render() })
                     $(".filter", $chart).hide().click(function() { chart.filterAll(); qb.render() })
@@ -296,36 +305,48 @@ define(["underscore", "moment", "crossfilter2", "dc", "d3",
                 return this;
             },
 
-            filters: function(_newFilters) {
+            clearFilters: function() {
                 var charts = dc.chartRegistry.list(qb.id);
-                if (!_newFilters) {
-                    var filters = {}
-                    for (var i = 0; i < charts.length; ++i) {
-                        filters[i] = charts[i].filters();
-                    }
-                    console.log("get filters: ", filters)
-                } else {
-                    for (var i = 0; i < charts.length; ++i) {
-                        if (_newFilters[i]) {
-                            charts[i].filter(null);
-                            _.each(_newFilters[i], function(_filter) {
-                                if (_filter) {
-                                    charts[i].filter(_filter);
-                                    console.log("set filter: ", i, _filter)
-                                }
-                            })
-                            charts[i].redrawGroup();
-                        }
+                for (var i = 0; i < charts.length; ++i) {
+                    filters[i] = charts[i].filters();
+                }
+            },
+
+            filter: function(name, fn) {
+                if (!name) throw "unamed filter";
+                if (!fn) return this.options.filters[name];
+                return this.options.filters[name] = fn;
+            },
+
+            // TODO: fix
+            filters: function(_newFilters) {
+                if (!_newFilters) return this.options.filters;
+                if (!_newFilters) return this.options.filters;
+
+                this.clearFilters();
+
+                var charts = dc.chartRegistry.list(qb.id);
+                for (var i = 0; i < charts.length; ++i) {
+                    if (_newFilters[i]) {
+                        charts[i].filter(null);
+                        _.each(_newFilters[i], function(_filter) {
+                            if (_filter) {
+                                charts[i].filter(_filter);
+                                console.log("set filter: ", i, _filter)
+                            }
+                        })
+                        charts[i].redrawGroup();
                     }
                 }
                 return filters;
             },
 
             // key and value closures
+            // used by valueAccessor to identify the value
             accessor: {
-                key:  function(r) { return r.key },
-                keyDate:  function(r) { return qb.as.date(r, "key") },
-                value:  function(r) { return r.value },
+                key:  function(r) { return r[qb.options.keyField||"key"] },
+                keyDate:  function(r) { return qb.as.date(r, qb.options.keyField||"key") },
+                value:  function(r) { return r[qb.options.valueField||"value"] },
                 number:  function(r) { return parseFloat(r.value).toFixed(qb.options.decimalPlaces)  },
                 total:  function(r) { return parseFloat(r.value?r.value.total:0).toFixed(qb.options.decimalPlaces) },
                 count:  function(r) { return r.value?r.value.count:0 },
@@ -435,7 +456,7 @@ define(["underscore", "moment", "crossfilter2", "dc", "d3",
                     var $c = (chart.root());
                     console.log("_controls: %o %o", $c, chart)
                     chart.select(".reset").on("click", function() {
-                            chart.filterAll();
+                        chart.filterAll();
                     })
                 },
 
