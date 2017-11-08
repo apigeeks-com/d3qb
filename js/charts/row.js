@@ -22,6 +22,10 @@ define(["underscore", "dc"], function (_, dc) {
                     chart.colors( qb.colors(slice.colors) );
                 }
 
+                // heuristically reduce x-axis over-crowding
+                var x_ticks = parseInt(slice.ticks | slice.width/50);
+                chart.xAxis().ticks(x_ticks).tickFormat( function(v) { return v; });
+
                 return chart;
             },
 

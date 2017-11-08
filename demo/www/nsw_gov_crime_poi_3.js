@@ -25,9 +25,9 @@ require.config({
         dc: "/bower_components/dcjs/dc",
         d3: "/bower_components/d3/d3",
 
+        defaults: "defaults",
         qb: "d3qb/js/qb",
         qbs: "d3qb/js/qbs",
-        defaults: "d3qb/js/defaults",
         qbd: "d3qb/js/qbd"
 
     },
@@ -38,9 +38,6 @@ require.config({
         },
         "crossfilter": {
             exports : 'crossfilter'
-        },
-        "crossfilter2": {
-            exports : 'crossfilter2'
         },
         "colorbrewer": {
             exports : 'colorbrewer'
@@ -111,15 +108,118 @@ requirejs(["qbd"], function(qbd) {
     }
 
     new qbd({
-        debug: false,
+        debug: true,
         qbd: [{
             el: "#qb-container",
             url: "/data/nsw_gov_crime_poi.json",
-            colors: "blue",
+            //url: "http://mvp.apigeeks.com:8529/" +
+            //    "_db/lab-dashboards/dashboards/samples",
+            colors: "red",
             charts: [
+            {
+                "disabled": false,
+                "width": 800, "height": 300,
+                "header": "Incidents by Suburb",
+                "type": "geoChoropleth",
+                "showControls": true,
+                "renderHorizontalGridLines": false,
+                "renderVerticalGridLines": false,
+                "valueAccessor": "count",
+                "measure": "incyear",
+                "dimension": "locsurb"
+            },
+            /*
+            {
+                "width": 1020, "height": 350,
+                "header": "By Year",
+                "type": "line",
+                "margins": {
+                    "left": 80
+                },
+                "valueAccessor": "count",
+                "measure": "poi_age",
+                "dimension": "incyear",
+                "xLabel": "Year",
+                "yLabel": "Incidents",
+            },
+            {
+                "width": 465, "height": 350,
+                "header": "By Gender",
+                "type": "donut",
+                "valueAccessor": "count",
+                "measure": "poisex",
+                "dimension": "poisex",
+                "radius" : "170",
+                "innerRadius" : "0",
+                //"renderLegend" : "true",
+                "labels": {
+                    "M": "Male",
+                    "F": "Female",
+                    "O": "Other",
+                    "U": "Unknown",
+                    "": "Not Specified"
+                },
+            },
+
+            {
+                "disabled": false,
+                "width": 465, "height": 350,
+                "header": "By Day of the Week",
+                "type": "bar",
+                "gap": 15,
+                "ordinal": true,
+                "renderLabel" : true,
+                "margins": {
+                    "left": 40
+                },
+
+                //"y": {
+                //    "label": "Number of incidents"
+                //},
+                "valueAccessor": "count",
+                "measure": "count",
+                "dimension": "incday"
+            },
+            {
+                "el": "#count_summary",
+                "disabled": false,
+                "header": "Fact",
+                "type": "count",
+                "measure": "poi_age",
+                "dimension": "incyear",
+            },
+            {
+                "el": "#average",
+                "disabled": false,
+                "type": "count",
+                "measure": "poi_age",
+                "dimension": "incyear",
+            },
+            {
+                "el": "#trend",
+                "disabled": false,
+                "type": "count",
+                "measure": "poi_age",
+                "dimension": "incyear",
+            },
+            {
+                "el": "#highest",
+                "disabled": false,
+                "type": "count",
+                "measure": "poi_age",
+                "dimension": "incyear",
+            },
+            {
+                "el": "#lowest",
+                "disabled": false,
+                "type": "count",
+                "measure": "poi_age",
+                "dimension": "incyear",
+            },*/
+            /*
                 {
                     "disabled": false,
-                    "width": 330, "height": 600,
+                    "width": 330, "height": 653,
                     "header": "Age by Suburb",
                     "type": "row",
                     "showControls": true,
@@ -130,22 +230,21 @@ requirejs(["qbd"], function(qbd) {
                     "dimension": "locsurb"
                 },
                 {
-                    "debug": true,
+                    "debug": false,
                     "width": 200, "height": 200,
                     "header": "Incident Type",
                     "type": "row",
-                    "showControls": true,
-                    "gap": 5,
+                    "gap": 1,
                     "renderLabel": true,
                     "valueAccessor": "count",
                     "measure": "poi_age",
-                    "dimension": "bcsrgrp"
+                    "dimension": "bcsrgrp",
+                    "class": "col-sm-3"
                 },
                 {
                     "disabled": false,
                     "width": 200, "height": 200,
                     "header": "POI Gender",
-                    "showControls": true,
                     "type": "donut",
                     "valueAccessor": "count",
                     "measure": "poisex",
@@ -159,7 +258,6 @@ requirejs(["qbd"], function(qbd) {
                 {
                     "el": "#count_summary",
                     "disabled": false,
-                    "showControls": true,
                     "width": 800, "height": 400,
                     "header": "Fact",
                     "type": "count",
@@ -167,13 +265,12 @@ requirejs(["qbd"], function(qbd) {
                     "dimension": "incyear",
                 },
                 {
-                    "width": 350, "height": 200,
+                    "width": 256, "height": 200,
                     "header": "Incidents by Year",
                     "type": "row",
-                    "showControls": true,
-                    "gap": 5,
-                    margins: {
-                        left: 50
+                    "gap": 1,
+                    "margins": {
+                        "left": 20
                     },
                     "valueAccessor": "count",
                     "measure": "poi_age",
@@ -181,13 +278,13 @@ requirejs(["qbd"], function(qbd) {
                 },
                 {
                     "disabled": false,
-                    "width": 760, "height": 350,
+                    "width": 718, "height": 350,
                     "header": "Monthly Incidents",
-                    "showControls": true,
                     "type": "bar",
+                    "gap": 1,
                     "ordinal": true,
                     "margins": {
-                        "left": 60
+                        "left": 70
                     },
                     "y": {
                         "label": "Number of incidents"
@@ -199,16 +296,15 @@ requirejs(["qbd"], function(qbd) {
                 {
                     "disabled": true,
                     "width": 200, "height": 200,
-                    "showControls": true,
                     "header": "Price",
                     "type": "row",
                     "valueAccessor": "average",
                     "measure": "locsurb",
                     "dimension": "bcsrgrp"
                 }
+                */
             ]
         }]
     });
 
-    console.log("[d3qb] started: %o", qbd);
 });

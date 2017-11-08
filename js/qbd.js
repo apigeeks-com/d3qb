@@ -12,6 +12,7 @@ _.extend(qbd, {
 		_.extend(qbd.options,options);
         this.DEBUG = options.debug?true:false;
 
+
 		qbd.$el = qbd._createContainerElement(qbd.options);
 		qbd.$el.addClass(qbd.options.css.root);
         console.log("init qbd(): %o %o -> %o", qbd, qbd.options, qbd.$el)
@@ -60,18 +61,18 @@ _.extend(qbd, {
 		qbd._drawHeader(conf);
 
         this.DEBUG && console.log("Dashboard: ", conf.id, conf)
-		var responseAccessor = conf.responseAccessor || qbd.options.responseAccessor;
-		var responseType = conf.responseType || qbd.options.responseType || "json";
+		var responseAccessor = conf.responseAccessor || qbd.options.responseAccessor
+		var responseType = conf.responseType || qbd.options.responseType || "json"
 
-		if (_.isString(responseAccessor)) responseAccessor = qbd.responseFormat[responseAccessor];
+		if (_.isString(responseAccessor)) responseAccessor = qbd.responseFormat[responseAccessor]
 
 		var $loading = $(conf.loader || ".qb-loading" );
-		var url = conf.url+"?";
+		var url = conf.url+"?"
 
 		_.each(params, function(v,k) {
-			url+=k+"="+encodeURIComponent(v)+"&";
+			url+=k+"="+encodeURIComponent(v)+"&"
 		})
-		url = url.substring(0,url.length-1);
+		url = url.substring(0,url.length-1)
 
 		$loading.show();
 		// ask the data source
@@ -81,11 +82,15 @@ _.extend(qbd, {
 
             d3[responseType](url, function(response) {
                 //self.DEBUG &&
-                console.log("Loaded QB data: %s %o %o -> %o", conf.id, conf, response, responseAccessor);
+                console.log("Loaded QB data: %s %o %o", conf.id, conf, response);
 
 				var data = responseAccessor?responseAccessor(response):response
 				// register() and load() data into qb(), finally .. render()
 				qbd.register.qb(conf.id, conf);
+
+				// REVIEW: what is intent? should it not be a "responseAccessor"
+				if (data[0].data)
+					data = data[0].data;
 
 				if ( (!data || !data.length) && conf.empty) {
 					qbd.drawEmpty(conf);
@@ -223,7 +228,6 @@ _.extend(qbd, {
 
 	responseFormat: {
 		"scorpio4": function(r) { return r.result },
-        "data": function(r) { console.log("Data Response: %o", r.data ); return r.data },
 		"data.gov.au": function(r) { return r.result.records }
 	}
 });

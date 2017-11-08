@@ -1,0 +1,91 @@
+html  { font-size: 80%; position: relative; min-height: 100%;}
+body  { color: #002664; font-family: "Gotham SSm A", "Gotham SSm B"; font-weight: 300; margin-bottom: 75px !important; background-color: white; }
+/* Typography */
+h1 { font-weight: 400; color: #1D1D1D; }
+h2 { font-weight: 400; }
+h3 { font-weight: 200; }
+h4 { font-weight: 400; }
+h5 { font-weight: 200; line-height: 1.75rem }
+h6 { font-weight: 200; }
+.title { border-bottom: 3px solid #752F8A; padding-bottom: 15px; margin-bottom: 40px; font-weight: 600; }
+a  { color: #752F8A; text-decoration: underline; }
+strong { font-weight: 700; }
+a:hover  { color: #752F8A; text-decoration: none; }
+a.drop-arrow { display: inline-block; border: 0px; }
+a.drop-arrow:after { background-repeat: no-repeat; content: " "; display: block; width: 10px; height: 10px; position: absolute; background-size: contain; right: -5px; top: 40%; opacity: 0.7; }
+
+/* Alignments */
+.text-right { text-align: right; }
+/* Padding */
+.pad-top  { padding-top: 2rem; }
+.pad-bot  { padding-bottom: 2rem; }
+.pad-top-bot  { padding-top: 2rem; padding-bottom: 2rem }
+/* Buttons and Inputs */
+.btn { font-weight: 300; border-radius: 0.15rem; border-width: 1px; padding-right: 1rem !important; padding-left: 1rem !important }
+.btn-white { border-color: #752F8A; }
+.btn-white-purple { background: #752F8A; border: 1px solid #FFFFFF !important; color: white; }
+.btn-purple { background: #752F8A; color: #FFFFFF; }
+.btn:hover { background: #002664; color: #FFFFFF; }
+input[type="text"] { padding: 1rem 0.75rem; font-size: 1rem; line-height: 1.25; border-radius: 0.15rem; }
+/* Tabs */
+.nav-tabs .nav-link.active { color: #002664; background-color: #fff; font-weight: 500; }
+.nav-tabs .nav-item a { border-radius: 0.25rem 0.25rem 0 0; margin-right: 0.5rem; border: 1px solid #FFFFFF; border-color: #fff #fff #fff !important; border-bottom: 0 !important; color: white; padding: 0.65rem 1.5rem; }
+/* Id's and Segments */
+/* Header */
+header  { font-weight: 400; background: #752F8A; }
+  #search { display: inline-block; width: 100%; position: relative; margin-top: 2.2rem; }
+  #search .icon-search { position: absolute; top: 0.5rem; left: 0px; width: 20px; }
+  #search input { border: none; }
+  #search input[type="text"] { width: calc(100% - 100px); transition: width 0.5s ease; -webkit-transition: width 0.5s ease; background: #752F8A; border-bottom: 1px solid white; color: white; padding-left: 24px; font-size: 1.1rem; font-weight: 300; border-radius: 0px; margin-right: 10px; }
+  header a { font-weight: 500; padding-right: 1rem; border-right: 1px solid #002664 }
+  header input[type="text"] { padding: 0.5rem 0.75rem; font-size: 1rem; line-height: 1.25; border-radius: 0.15rem; border: 1px solid #FFFFFF; }
+  header input[type="submit"] { vertical-align: middle; margin-top: -2px; }
+  header svg { margin-top: -3px; vertical-align: middle; }
+  header .logo { width: 260px }
+  header .logo .gov-mark { background: white; float: left; padding: 15px; }
+  header .logo .gov-trends { float: left; padding-top: 2.25rem; padding-left: 2rem;  }
+  header .logo img.gov { width: 55px; }
+  header .logo img.nsw { width: 80px; }
+  header .logo .gov-trends .drop-arrow:after { top: 65%; }
+  header .bookmark { display: inline-block; }
+  header .icon-bookmark { width: 24px; }
+  header .profile { display: inline-block; }
+  header .icon-profile { width: 24px; }
+  header .drop-arrow { position: relative; padding-left: 20px; }
+  header .drop-arrow:after { background-image: url(../images/icon-arrow-down-white.svg);  }
+/* Menu */
+#menu { }
+#menu nav { padding: 0rem 0rem; margin: 0 -1rem; }
+#menu nav a { color: #002664; font-weight: 500; margin-right: 0.5rem; padding: 1.5rem 1rem 1rem }
+#menu nav a:hover { background: #335183; color: #FFF; }
+/* Content Head */
+#head { background: #002664; color: white; }
+  #head .nav.nav-tabs { border: none; }
+/* Main Body */
+main {  }
+  form label { font-weight: 600}
+  form .form-check-label { font-weight: 300; }
+  main a  { color: #752F8A; }
+  main a:hover  { color: #002664; text-decoration: none; }
+  .sso { display: block; text-align: left; background: #f1f1f1; margin-bottom: 0.15rem; width: 80px; height: 80px; vertical-align: middle; float: left; margin-right: 1px; }
+  .sso:hover { background: #002664; color: #FFFFFF !important; }
+  .sso i { margin-top: -0.2rem; font-size: 1.25rem; vertical-align: middle !important; line-height: 50px; text-align: center; font-size: 30px; margin: 0 auto; display: inherit; }
+  .sso-facebook { color: #4d66af !important; background: #dbe0ef }
+  .sso-google { color: #002664 !important; }
+  .sso-twitter { color: #48a0ee !important; background: #daecfc }
+  .sso-idhub { color: #752F8A !important; background: #e3d5e8 }
+/* Footer */
+footer  { background: #002664; color: #FFFFFF; font-weight: 300; position: absolute; bottom: 0; width: 100%; height: 75px }
+  footer a  { color: #FFFFFF; }
+  footer a:hover  { color: #752F8A; }
+  footer ul { margin-left: 0; padding-left: 0 }
+  footer li { list-style: none; line-height: 1.8rem; float: left; padding-right: 1rem; }
+  footer .subscribe { border-left: 1px solid #333333; }
+  footer form .btn { margin-top: -1px; border-color: white; border-bottom-left-radius: 0; border-top-left-radius: 0; line-height: 2.15rem; }
+  footer input[type="text"] { width: calc(100% - 76px); border-bottom-right-radius: 0; border-top-right-radius: 0; border: 1px solid #FFFFFF; }
+  .social { display: block; text-align: left; background: #f1f1f1; margin-bottom: 0.15rem; width: 30px; height: 30px; vertical-align: middle; margin-right: 1px; text-decoration: none; float: right; margin-left: 10px }
+  .social:hover { background: #002664; color: #FFFFFF !important; text-decoration: none; }
+  .social i { margin-top: -0.2rem; vertical-align: middle !important; line-height: 30px; text-align: center; font-size: 16px; margin: 0 auto; display: inherit; }
+  .social-facebook { color: #002664 !important; background: #FFFFFF }
+  .social-twitter { color: #FFFFFF !important; background: #48a0ee }
+aside { position: absolute; background: #EBF0F4; height: 100%; top: 0; right: 0px}

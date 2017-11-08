@@ -13,19 +13,24 @@ console.log("bar el: %o", el);
                 slice = qb.chart._configure(chart, "bar", slice);
                 console.log("Bar: ", chart, slice);
 
-                chart.x(d3.scale.ordinal()).elasticX(slice.elasticX).xUnits(dc.units.ordinal)
-//                chart.x(d3.scale.linear());
-//                chart.y(d3.scale.linear());
+                chart.x(d3.scale.ordinal()).elasticX(slice.elasticX).xUnits(dc.units.ordinal);
+               // chart.x(d3.scale.linear());
+               // chart.y(d3.scale.linear());
 
                 chart.round(dc.round.floor);
 
                 chart.brushOn(slice.brushOn)
-                    .renderHorizontalGridLines(false)
+                    .renderHorizontalGridLines(true)
                     .renderVerticalGridLines(false)
+                    .renderLabel(true)
                     .elasticX(slice.elasticX)
                     .elasticY(slice.elasticY)
                     .centerBar(slice.centerBar);
 
+                if (slice.renderLegend) {
+                    // REVIEW: should horizontal, y & gap be constants?
+                   chart.legend(dc.legend().horizontal(true).y(370).gap(20).autoItemWidth(true));
+                }
                 chart.xAxis().tickFormat( function(v) { return v; });
 
                 if (slice.label) chart.label(slice.label);

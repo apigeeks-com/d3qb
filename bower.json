@@ -28,7 +28,8 @@
     "dc-addons": "^0.13.5",
     "bootstrap": "^3.3.7",
     "crossfilter2": "^1.4.3",
-    "crossfilter": "^1.3.12"
+    "crossfilter": "^1.3.12",
+    "datepicker": "*"
   },
   "resolutions": {
     "dcjs": "^2.0.0",

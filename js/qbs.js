@@ -1,7 +1,3 @@
-/*
-	Manages a collection of dashboards (qbs)
-*/
-
 define(["backbone", "colorbrewer", "dc", "d3", "qb"], function (Backbone, colorbrewer, dc, d3, qb) {
 
 var dash = {}
@@ -17,12 +13,8 @@ _.extend(dash, {
 		$el.addClass(dash.options.css.root);
 		console.log("Loaded QBS(): %o %o %o", $el, dash, dash.options)
 
-		// configure each dashboard
-
 		_.each(this.options.qbs, function(conf, dash_id) {
-			conf.id = conf.id || "qbd_"+dash_id;
-
-			// DOM creation / configuration
+			conf.id = conf.id || "qbd_"+dash_id
 			conf.el = dash._createContainerElement(conf)
 			$el.append( conf.el );
 			conf.el.addClass(dash.options.css.dash);
@@ -31,52 +23,35 @@ _.extend(dash, {
 			}
 
 			console.log("Dashboard: ", dash_id, conf.id, conf.url, conf)
-
-            // configure data response parsing
-
 			var responseAccessor = conf.responseAccessor || dash.options.responseAccessor
-			var responseType = conf.responseType || "json";
+			var responseType = conf.responseType || "json"
 
-			// query the data source
-
+			// ask the data source
 			if (conf.url && d3[responseType]) {
 				// TODO: optimise re-use of data sources
 				d3[responseType](conf.url, function(response) {
-
-					// find the data within the response
-
 					var data = responseAccessor?responseAccessor(response):response
-					console.log("Loaded data: ", conf.id, data);
+					console.log("Loaded data: ", conf.id, data)
 
 					// register() and load() data into qb(), finally .. render()
-
-					var _qb = dash.register.qb(conf.id, conf);
-					_qb.load(data);
+					var _qb = dash.register.qb(conf.id, conf)
+					_qb.load(data)
 
 					// draw all configured charts
-
 					_.each(conf.charts, function(chart_conf, chart_id) {
-
-						// attach to DOM
-
-						chart_conf.id = chart_conf.id || "qbd-"+dash_id+"_"+chart_id;
+						chart_conf.id = chart_conf.id || "qbd-"+dash_id+"_"+chart_id
 						chart_conf.el = dash._createContainerElement(chart_conf);
 						chart_conf.el.addClass(dash.options.css.chart);
-						conf.el.append( chart_conf.el );
-
-						// draw a chart type
-						var chart = _qb.draw(chart_conf.type, chart_conf);
-
-						// add preset filters for this chart
-
+						conf.el.append( chart_conf.el )
+						var chart = _qb.draw(chart_conf.type, chart_conf)
 						if (conf.filters && _.isString(chart_conf.dimension)) {
 							var filters = conf.filters[chart_conf.dimension];
 							_.each(filters, function(filter) {
-								chart.filter(filter);
-							});
-							console.log("preset-filter: ", chart_conf.id, filters);
+								chart.filter(filter)
+							})
+							console.log("preset-filter: ", chart_conf.id, filters)
 						}
-					});
+					})
 					_qb.render()
 				})
 			}

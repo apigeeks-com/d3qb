@@ -1,0 +1,133 @@
+body  { color: #002664; font-family: "Gotham SSm A", "Gotham SSm B","Gotham" !important; font-weight: 300; }
+main { }
+#qb-container { display: block; padding-left: 15px; padding-right: 15px; }
+
+#count_summary { height: 40px; display: inline-block; }
+.qb-filter-stats button { background: #752F8A; color: #FFFFFF; }
+.qb-loading { padding-top: 200px; padding-bottom: 200px; margin-left: auto; margin-right: auto; text-align: center; }
+svg g text { stroke: #FFFFFF; font-weight:lighter; fill: none; }
+
+.panel-heading { font-size: 18px; color: #000; font-weight: 600; padding: 0px 0px 20px; }
+
+
+text { fill: #002664; text-transform: none;}
+svg g text {
+    stroke: none;
+    font-weight: 300;
+    fill: rgba(179,179,179,1);
+}
+.dc-chart .axis line, .dc-chart .axis path {
+    fill: none;
+    stroke: rgba(179,179,179,0);
+    shape-rendering: crispEdges;
+}
+
+.dc-chart .selected circle, .dc-chart .selected path {
+    stroke-width: 0;
+    stroke: #ccc;
+    fill-opacity: 1;
+    fill: #752F8A;
+}
+
+.dc-chart g.row text {
+    fill: #002664;
+    font-size: 12px;
+    cursor: pointer;
+    stroke: none;
+    font-weight: 600;
+}
+.dc-chart g.row .selected {
+    fill:  #752F8A;
+    fill-opacity: 0.75;
+}
+.dc-chart rect.selected {
+    fill-opacity: 1;
+    stroke: none;
+    fill: #752F8A !important;
+}
+.dc-chart .pie-slice {
+    fill: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 300;
+}
+.dc-chart circle.dot {
+  stroke: #56B2EA;
+  stroke-width : 10px;
+}
+.dc-chart path.line {
+  stroke-width: 3;
+}
+.dc-chart .y-axis-label, .dc-chart .x-axis-label {
+  text-transform : uppercase;
+}
+.dc-chart .y-axis-label, .dc-chart .x-axis-label {
+  text-transform : uppercase;
+}
+.dc-chart .x-axis-label, .dc-chart g.axis.x .tick text {
+  font-weight : bold;
+  fill : #808080;
+  line-height : 2em;
+}
+
+svg:not(:root) {
+    overflow: visible !important;
+}
+div.qb-chart {
+  background: #eef2f5;
+  padding: 40px;
+  border-radius: 50px;
+  margin: 10px 10px 0 0;
+}
+
+.dc-chart .axis .grid-line, .dc-chart .axis .grid-line line, .dc-chart .grid-line, .dc-chart .grid-line line {
+    fill: none;
+    stroke: rgba(121,121,121,0.2);
+    opacity: 1;
+    shape-rendering: crispEdges;
+}
+.dc-chart .axis .grid-line:first-child, .dc-chart .axis .grid-line line:first-child, .dc-chart .grid-line:first-child, .dc-chart .grid-line line:first-child {
+    fill: none;
+    stroke: #797979;
+    opacity: 1;
+    shape-rendering: crispEdges;
+}
+.dc-chart rect.bar {
+    stroke: none;
+    cursor: pointer;
+    fill: #0A7CB7;
+}
+.dc-chart .axis text {
+    font-family: "Gotham SSm A", "Gotham SSm B","Gotham" !important;
+}
+.qb-chart-data { padding: 0px !important; }
+.qb-chart-data .qb-filter-stats strong {
+    font-size: 40px;
+    color: #002664;
+    font-weight: 300;
+}
+
+.qb-chart-data .qb-filter-stats  {
+    color: #eef2f5;
+}
+.key-stat {
+  padding: 35px 0px 30px 40px !important;
+  border-right: 1px solid rgba(125,125,125,0.25);
+  margin-right: 0;
+}
+.key-stat:last-child {
+  border-right: 0px;
+}
+.count-average .icon { width: 50px; height: 25px; background: url(../images/count-average.svg) no-repeat; display: block; float: left; margin-top: 1.2rem; }
+.count-trend .icon { width: 50px; height: 25px; background: url(../images/count-trend-up.svg) no-repeat; display: block; float: left; margin-top: 1.2rem; }
+.count-highest .icon { width: 50px; height: 25px; background: url(../images/count-highest.svg) no-repeat; display: block; float: left; margin-top: 1.2rem; }
+.count-lowest .icon { width: 50px; height: 25px; background: url(../images/count-lowest.svg) no-repeat; display: block; float: left; margin-top: 1.2rem; }
+
+
+/*
+.pie-slice._0 path { fill: #04AEA6 }
+.pie-slice._1 path { fill: #00A9E4 }
+.pie-slice._2 path { fill: #0A7CB7 }
+.pie-slice._3 path { fill: #002664 }
+.pie-slice._4 path { fill: #752F88 }
+*/

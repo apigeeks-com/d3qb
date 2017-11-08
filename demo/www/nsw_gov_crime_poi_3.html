@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+    <meta name="description" content="meta4beta"/>
+    <meta name="author" content="troven.com.au"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <link rel="icon" type="image/png" href="/assets/favicon.png">
+
+    <title>d3qb</title>
+    <link href="/bower_components/dcjs/dc.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cloud.typography.com/6830892/7742992/css/fonts.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+	<script src="/bower_components/requirejs/require.js"></script>
+	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <style>
+
+    </style>
+</head>
+
+<body>
+<header class="">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-sm-3">
+        <div class="logo">
+          <div class="gov-mark"><img src="images/logo_nsw_gov.svg" class="gov"></div>
+          <div class="gov-trends "><a class="drop-arrow"><img src="images/data_nsw_beta_white.svg" class="nsw"></a></div>
+        </div>
+      </div>
+      <div class="col-sm-5">
+        <form id="search">
+          <input type="text" value="Search...">
+          <img src="images/icon-search.svg" class="icon-search">
+          <input type="submit" value="Search" class="btn btn-white-purple">
+        </form>
+      </div>
+      <div class="col-12 col-sm-4 text-right pad-top">
+        <a class="bookmark drop-arrow">
+          <img src="images/icon-bookmark.svg" class="icon-bookmark ">
+        </a>
+        <a class="profile drop-arrow">
+          <img src="images/icon-profile.svg" class="icon-profile ">
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+
+<main class="pad-top-bot">
+    <div class="container pad-top-bot">
+        <div class="row">
+          <div class="col-12"><h1 class="title">Crime Incident Rates</h1></div>
+        </div>
+        <div class="row">
+          <div class="col-12">Number of records: <span id="count_summary"></span></div>
+        </div>
+        <div id="qb-container" class="row qbd">
+            <h2 class="qb-loading pad-bot"><img width="128" src="/assets/cube_loading.gif"/></h2>
+        </div>
+        <div class="clearfix"> </div>
+    </div>
+</main>
+<footer class="pad-top-bot">
+  <div class="container">
+    <div class="row">
+      <div class="col-6 col-sm-6 col-md-6 col-lg-9">
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Help</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-sm-6 col-md-6 col-lg-3">
+
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="nsw_gov_crime_poi.js"></script>
+</body>
+</html>

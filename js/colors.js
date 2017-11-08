@@ -17,7 +17,7 @@ define(["underscore", "colorbrewer"], function (_, colorbrewer) {
             colors: colorbrewer.Greys[9]
         },
         "default": {
-            colors: colorbrewer.Blues[9]
+            colors: colorbrewer.Greys[9]
         }
     }
 });

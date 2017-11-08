@@ -1,4 +1,4 @@
-define(["underscore", "dc", "d3qb/js/chart" ], function (_, dc, chart) {
+define(["underscore", "dc"], function (_, dc) {
 
     // chart type definition
 
@@ -15,7 +15,8 @@ define(["underscore", "dc", "d3qb/js/chart" ], function (_, dc, chart) {
                 slice = qb.chart._configure(chart, "count", slice);
 
                 console.log("Count: %o", slice);
-                var $el = $(el);
+                var $el = slice.el;
+                console.log('CHART:' + $el);
 
                 chart.html({
                     some: slice.some || '<div class="qb-filter-stats">showing <strong>%filter-count</strong> of <strong>%total-count</strong> - <button class="btn btn-default btn-sm" data-action="reset">reset</button></div>',
@@ -26,9 +27,8 @@ define(["underscore", "dc", "d3qb/js/chart" ], function (_, dc, chart) {
                     $("[data-action='reset']", $el).click(function() {
                         console.log("Filter Reset: ", qb, qb.filters() );
                         qb.reset();
-                    })
-                })
-
+                    });
+                });
 
                 return chart;
             },

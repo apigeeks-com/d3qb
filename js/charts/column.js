@@ -14,20 +14,20 @@ define(["underscore", "dc", "d3qb/js/chart" ], function (_, dc, chart) {
                 chart.
                 x(d3.scale.ordinal())
                     .xUnits(dc.units.ordinal)
-                    .y(d3.scale.linear());
+                    .y(d3.scale.linear())
 
                 chart
-                    .gap(slice.gap || 2);
+                    .gap(slice.gap || 2)
 
                 chart.brushOn(slice.brushOn)
                     .renderHorizontalGridLines(true)
                     //			.renderVerticalGridLines(false)
                     //			.elasticX(slice.elasticX)
                     .elasticY(slice.elasticY)
-                    .centerBar(slice.centerBar);
+                    .centerBar(slice.centerBar)
 
                 chart.xAxis().tickFormat();
-                if(slice.label) chart.label(slice.label);
+                if(slice.label) chart.label(slice.label)
 
                 return chart;
             },
