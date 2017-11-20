@@ -1,4 +1,4 @@
-define(["underscore", "dc", "d3qb/js/chart" ], function (_, dc, chart) {
+define(["underscore", "dc", "d3qb/js/charts/dc/selectMenu" ], function (_, dc, SelectMenu) {
 
     // chart type definition
 

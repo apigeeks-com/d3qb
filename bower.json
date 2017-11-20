@@ -23,7 +23,7 @@
     "underscore": "^1.8.3",
     "backbone.marionette": "^2.4.7",
     "d3": "^3.5.17",
-    "dcjs": "^2.0.0",
+    "dcjs": "^2.1.0",
     "moment": "^2.14.1",
     "dc-addons": "^0.13.5",
     "bootstrap": "^3.3.7",

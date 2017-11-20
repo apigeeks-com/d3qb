@@ -14,7 +14,12 @@ define(["underscore", "dc", "d3qb/js/chart" ], function (_, dc, chart) {
                     .innerRadius(slice.innerRadius)
                     .slicesCap(slice.slicesCap);
 
-                if (slice.renderLegend) chart.legend(chart.legend || dc.legend())
+                if (slice.renderLegend) {
+                    // chart.legend ||
+                    var legend  = dc.legend();
+                    legend.x(0).y(10).itemHeight(15).gap(10);
+                    chart.legend(legend);
+                }
 
                 return chart;
             },
@@ -22,13 +27,13 @@ define(["underscore", "dc", "d3qb/js/chart" ], function (_, dc, chart) {
                 aspectRatio: 250/200,
                 width: 250,
                 height: 200,
-                radius: 90,
+                radius: 250,
                 innerRadius: 0,
                 slicesCap: 10,
                 renderTitle: true,
                 showControls: false,
                 renderLabel: true,
-                renderLegend: false
+                renderLegend: true
             }
         }
     };

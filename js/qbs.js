@@ -9,10 +9,12 @@ _.extend(dash, {
 	init: function(options) {
 		_.extend(dash.options,options);
 
+		// ensure DOM exists and styled correctly
 		var $el = dash.options.el = dash._createContainerElement(dash.options)
 		$el.addClass(dash.options.css.root);
 		console.log("Loaded QBS(): %o %o %o", $el, dash, dash.options)
 
+		// for each dashboard ..
 		_.each(this.options.qbs, function(conf, dash_id) {
 			conf.id = conf.id || "qbd_"+dash_id
 			conf.el = dash._createContainerElement(conf)
@@ -22,43 +24,55 @@ _.extend(dash, {
 				conf.el.append( $("<div/>").addClass(dash.options.css.header).html(conf.header) )
 			}
 
-			console.log("Dashboard: ", dash_id, conf.id, conf.url, conf)
+			console.log("QBS.init: ", dash_id, conf.id, conf.url, conf)
 			var responseAccessor = conf.responseAccessor || dash.options.responseAccessor
-			var responseType = conf.responseType || "json"
+			var responseType = conf.responseType || "json";
 
 			// ask the data source
 			if (conf.url && d3[responseType]) {
 				// TODO: optimise re-use of data sources
 				d3[responseType](conf.url, function(response) {
-					var data = responseAccessor?responseAccessor(response):response
-					console.log("Loaded data: ", conf.id, data)
+					var data = responseAccessor?responseAccessor(response):response;
+					console.log("Loaded data: ", conf.id, data);
 
 					// register() and load() data into qb(), finally .. render()
-					var _qb = dash.register.qb(conf.id, conf)
-					_qb.load(data)
+					var _qb = dash.register.qb(conf.id, conf);
+					_qb.load(data);
 
-					// draw all configured charts
-					_.each(conf.charts, function(chart_conf, chart_id) {
-						chart_conf.id = chart_conf.id || "qbd-"+dash_id+"_"+chart_id
-						chart_conf.el = dash._createContainerElement(chart_conf);
-						chart_conf.el.addClass(dash.options.css.chart);
-						conf.el.append( chart_conf.el )
-						var chart = _qb.draw(chart_conf.type, chart_conf)
-						if (conf.filters && _.isString(chart_conf.dimension)) {
-							var filters = conf.filters[chart_conf.dimension];
-							_.each(filters, function(filter) {
-								chart.filter(filter)
-							})
-							console.log("preset-filter: ", chart_conf.id, filters)
-						}
-					})
-					_qb.render()
+					dash.drawCharts(conf.charts);
+
 				})
 			}
 
 		});
 		return this;
 	},
+
+    // draw all configured charts
+	drawCharts: function(charts) {
+
+        _.each(charts, function(chart_conf, chart_id) {
+            chart_conf.id = chart_conf.id || "qbd-"+dash_id+"_"+chart_id;
+            var is_existing_dom = chart_conf.el?$(chart_conf.el):false;
+
+            chart_conf.el = dash._createContainerElement(chart_conf);
+            chart_conf.el.addClass(dash.options.css.chart);
+
+            if (!is_existing_dom) {
+                conf.el.append( chart_conf.el );
+			}
+            console.log("is_existing_dom: %s -> %o -> %o", is_existing_dom, chart_conf, $(chart_conf.el));
+
+            var chart = _qb.draw(chart_conf.type, chart_conf);
+            if (conf.filters && _.isString(chart_conf.dimension)) {
+                var filters = conf.filters[chart_conf.dimension];
+                _.each(filters, function(filter) {
+                    chart.filter(filter);
+                });
+                console.log("preset-filter: ", chart_conf.id, filters)
+            }
+        });
+        _qb.render();	},
 	qb: function(qb_id) {
  		if (!qb_id) throw "dash:qb:anonymous"
 		var dash_qb = dash._qbs[qb_id]

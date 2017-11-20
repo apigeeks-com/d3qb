@@ -1,25 +1,25 @@
-define(["underscore", "dc"], function (_, dc) {
+define(["underscore", "dc", "d3qb/js/charts/dc/summaryText"], function (_, dc, SummaryText) {
 
     // chart type definition
 
     return function(qb) {
 
         return {
-            title: "Count",
+            title: "Summary",
 
             create: function(el, slice) {
-                var chart = dc.dataCount(el, qb.id);
+                var chart = dc.summaryText(el, qb.id);
 
                 slice.dimension = qb.data;
                 slice.group = slice.group || qb.data.groupAll();
                 slice = qb.chart._configure(chart, "count", slice);
 
                 var $el = slice.el;
-                console.log('Chart Count: %o %o' , slice,  $el);
+                console.log('Chart Summary: %o %o' , slice,  $el);
 
                 chart.html({
-                    some: slice.some || '<div class="qb-filter-stats">showing <strong>%filter-count</strong> of <strong>%total-count</strong> - <button class="btn btn-default btn-sm" data-action="reset">reset</button></div>',
-                    all: slice.all || '<div class="qb-filter-stats"><strong>%total-count</strong> records</div>'
+                    some: slice.some || '<div class="qb-filter-stats">showing <strong><%=selected_total%></strong> of <strong><%=pretty_total%></strong> - <span class="fa fa-close clickable" data-action="reset"></span></div>',
+                    all: slice.all || '<div class="qb-filter-stats"><strong><%=pretty_total%></strong> records</div>'
                 });
 
                 chart.on("postRedraw", function() {

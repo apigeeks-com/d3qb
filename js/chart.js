@@ -1,5 +1,4 @@
-define(["underscore"], function (_) {
-
+define(["underscore", "helpers"], function (_, helpers) {
     return function(options, qb) {
 
         return {
@@ -8,8 +7,11 @@ define(["underscore"], function (_) {
                 qb.chart._sanityCheck(slice);
                 console.log("_configured: ", slice.header ? slice.header : "untitled", slice, qb.defaults.all, qb.defaults[type]);
 
-                if (slice.x && slice.x.label) chart.xAxisLabel(slice.x.label);
-                if (slice.y && slice.y.label) chart.yAxisLabel(slice.y.label);
+                if (slice.x && slice.x.label) chart.xAxisLabel(slice.x.label || slice.xLabel);
+                if (slice.y && slice.y.label) chart.yAxisLabel(slice.y.label || slice.yLabel);
+
+                slice.width = helpers.convert_percent(slice.width,"width");
+                slice.height = helpers.convert_percent(slice.height,"height");
 
                 chart
                     .width(slice.width)
@@ -30,30 +32,40 @@ define(["underscore"], function (_) {
                     qb.chart._controls(chart);
                 }
 
-                if (_.isFunction(slice.filterPrinter)) chart.filterPrinter(slice.filterPrinter)
-                if (slice.renderlet) chart.renderlet(slice.renderlet)
+                if (_.isFunction(slice.filterPrinter)) chart.filterPrinter(slice.filterPrinter);
+                // else chart.filterPrinter(function() {
+                //     console.log("filter: %o -> %o", arguments, slice);
+                // });
+                if (slice.renderlet) chart.renderlet(slice.renderlet);
 
-                var label = slice.label || slice.keyAccessor || slice.valueAccessor || function () {
-                        return "No Label"
-                    }
+                // display the label
+                var label = slice.label || slice.keyAccessor || slice.valueAccessor || function () { return "No Label"; }
                 slice.renderLabel && chart.label(label);
 
-                var title = slice.title || function (d) {
-                        return label(d) + " = " + (slice.valueAccessor ? slice.valueAccessor(d) : d.value)
-                    }
+                // render title
+                var title = _.isFunction(slice.title)?slice.title:function (d) {
+                    return label(d) + " = " + (slice.valueAccessor ? slice.valueAccessor(d) : d.value);
+                }
                 slice.renderTitle && chart.title(title);
+                console.log("Label & Title", label, title);
 
-                console.log("Label & Title", label, title)
+                // key / value accessors
+                if (slice.valueAccessor) chart.valueAccessor(slice.valueAccessor);
 
-                if (slice.valueAccessor) chart.valueAccessor(slice.valueAccessor)
-                if (slice.keyAccessor) chart.keyAccessor(slice.keyAccessor)
+                if (_.isString(slice.keyAccessor)) {
+                    slice.keyAccessor = function(d) {
+console.log("keyAccessor: %o", d);
+                        return d[slice.keyAccessor];
+                    }
+                }
+                if (slice.keyAccessor) chart.keyAccessor(slice.keyAccessor);
 
                 // optionally handle 'top-n' filtering
                 if (slice.top) {
                     if (_.isFunction(slice.top)) {
-                        chart.data(slice.top)
+                        chart.data(slice.top);
                     } else chart.data(function (group) {
-                        return group.top(slice.top)
+                        return group.top(slice.top);
                     })
                 }
 
@@ -61,8 +73,8 @@ define(["underscore"], function (_) {
             }
             ,
             _sanityCheck: function (slice) {
-                if (!slice) throw "urn:oops:qb:slice:missing";
-                if (!_.isObject(slice)) throw "urn:oops:qb:slice:invalid";
+                if (!slice) throw "oops:d3qb:slice:missing";
+                if (!_.isObject(slice)) throw "oops:d3qb:slice:invalid";
             },
 
             _controls: function (chart) {
@@ -75,7 +87,7 @@ define(["underscore"], function (_) {
 
             scale: {
                 time: function (chart, slice, axis) {
-                    if (axis && axis != "x") throw "urn:oops:qb:scale:time:invalid-axis";
+                    if (axis && axis != "x") throw "oops:d3qb:scale:time:invalid-axis";
                     slice.scale = slice.scale || {}
                     var scale = slice.scale.time || {}
                     axis = axis || "x"
@@ -107,8 +119,8 @@ define(["underscore"], function (_) {
                 }
             },
             _create: function (el, slice) {
-                if (!el) throw "urn:oops:qb:chart:create:missing:dom-selector";
-                if (!slice.type) throw "urn:oops:qb:chart:create:missing:type";
+                if (!el) throw "oops:d3qb:chart:create:missing:dom-selector";
+                if (!slice.type) throw "oops:d3qb:chart:create:missing:type";
                 return qb.chart[slice.type](el, slice);
             }
         }

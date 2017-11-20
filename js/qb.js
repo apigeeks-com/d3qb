@@ -34,14 +34,12 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
             },
             colors: function(palette) {
                 palette = palette || this.options.colors || "default";
-                if (_.isArray(palette)) {
-                    return d3.scale.ordinal().range(palette);
-                }
                 if (_.isString(palette)) {
                     var _colors = colors[palette] || colors.default;
-                    return d3.scale.ordinal().range(_colors.colors);
+                    palette = _colors.colors;
                 }
-                throw "Invalid Color Palette";
+                if (!_.isArray(palette))  throw "Invalid Color Palette";
+                return d3.scale.ordinal().range(palette);
             },
             load: function(data) {
                 if (!data) {
@@ -51,7 +49,7 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
 
                 this.data = crossfilter(data);
                 // REVIEW: this.raw could become an issue for large datasets as it duplicates this.data
-                this.raw = data;
+                // this.raw = data;
                 this.all = this.data.groupAll();
                 this.DEBUG && console.log("Loaded data: %o %o", this, data)
                 return this;
@@ -64,22 +62,22 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
                 },
 
                 dimension: function(name, slice) {
-                    var _d = _.isObject(slice)?_.extend({},slice):{}
-                    _d = _.pick(_d, "dimension", "keyAccessor", "label", "filterPrinter", "dimensionFormat", "byType", "byKey")
+                    var _d = _.isObject(slice)?_.extend({},slice):{};
+                    _d = _.pick(_d, "dimension", "keyAccessor", "label", "filterPrinter", "dimensionFormat", "byType", "byKey");
                     console.warn("register dimension (%s): %o %o", name, _d, _.extend({},slice) );
 
 //if (slice.byType) throw "x";
-                    _d.dimension = _.isObject(slice)?qb.dimension(name):qb.dimension(name, slice)
-                    _d.keyAccessor = _d.keyAccessor || function(r) { return qb.as[_d.byType||"value"](r, _d.byKey||"key") }
+                    _d.dimension = _.isObject(slice)?qb.dimension(name):qb.dimension(name, slice);
+                    _d.keyAccessor = _d.keyAccessor || function(r) { return qb.as[_d.byType||"value"](r, _d.byKey||"key") };
                     // auto-lookup labels
                     var _labels = qb._labels[name];
                     if (_labels) {
-                        _d.label = _d.label || function(r) { var v=r.key; return _labels[v]||v; }
+                        _d.label = _d.label || function(r) { var v=r.key; return _labels[v]||v; };
 
                         // and the filter printer ...
                         if (!_d.filterPrinter) {
                             _d.filterPrinter = function(r) {
-                                var filter = ""
+                                var filter = "";
                                 for(var i=0;i<r.length;i++) { filter+=(filter?", ":"")+(_labels[r[i]]||r[i]) }
                                 return filter;
                             }
@@ -123,16 +121,16 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
                     // simple type-based accessor
                     if (_.isString(type)) {
                         var fn = qb.as[type]
-                        if (!fn) throw "urn:oops:qb:dimension:unknown:accessor#"+type;
+                        if (!fn) throw "oops:d3qb:dimension:unknown:accessor#"+type;
                         console.log("Dimension (%s) As: %o %o", meta, type, fn)
-                        if (!qb.data) throw "urn:oops:qb:chart:data:missing"
+                        if (!qb.data) throw "oops:d3qb:dimension:data:missing"
 
                         // dynamic dimension by value Functor()
                         return qb.data.dimension( function(model) { return fn(model, meta) } );
                     }
-                    throw "urn:oops:qb:chart:create:invalid:dimension#"+meta
+                    throw "oops:d3qb:dimension:create:invalid:dimension#"+meta
                 }
-                throw "urn:oops:qb:chart:create:lost:dimension"
+                throw "oops:d3qb:dimension:create:lost:dimension"
             },
 
             group: function(dim, type) {
@@ -142,13 +140,13 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
                     reducer = type;
                 } else if (_.isString(type)) {
                     var fn = qb.reduce[type]
-                    if (!fn) throw "urn:oops:qb:group:type:unknown#"+type
+                    if (!fn) throw "oops:d3qb:group:type:unknown#"+type;
                     reducer = fn.apply(this, this._skipArgs(arguments, 2));
-                } else throw "urn:oops:qb:group:type:invalid#"+type
+                } else throw "oops:d3qb:group:type:invalid#"+type
 
-                if (_.isObject(reducer)) return dim.group().reduce( reducer.add, reducer.remove, reducer.initial )
+                if (_.isObject(reducer)) return dim.group().reduce( reducer.add, reducer.remove, reducer.initial );
                 if (_.isFunction(reducer)) return dim.group().reduceSum( reducer );
-                throw "urn:oops:qb:group:reducer#"+reducer
+                throw "oops:d3qb:group:invalid:reducer#"+reducer;
             },
 
             // _getMeasureFQ: function(name, slice) {
@@ -156,8 +154,8 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
             // },
 
             _measure: function(name, slice) {
-                slice.reducer = slice.reducer || "summarize"
-                slice.valueAccessor = slice.valueAccessor || "count"
+                slice.reducer = slice.reducer || "summarize";
+                slice.valueAccessor = slice.valueAccessor || "count";
 
                 // string or fn reduce - defaults to count / summarize()
                 slice.reducer = _.isString(slice.reducer)?qb.reduce[slice.reducer](name, slice):slice.reducer;
@@ -167,16 +165,16 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
             },
 
             _slice: function(slice) {
-                if (!_.isObject(slice)) throw "urn:oops:qb:invalid:slice"
+                if (!_.isObject(slice)) throw "oops:d3qb:invalid:slice";
                 slice = _.extend( {}, defaults, slice);
                 slice.margins = _.extend( {}, defaults.margins, slice.margins );
 
 
-                slice.dimension = slice.dimension || slice.by
+                slice.dimension = slice.dimension || slice.by;
                 // merge dimensions and measures
                 // if either is a string, then lookup them up in their respective registries
                 if (_.isString(slice.dimension)) {
-                    slice.by = slice.dimension
+                    slice.by = slice.dimension;
                     if (!qb._dimensions[slice.dimension]) {
                         qb.register.dimension(slice.dimension, slice);
                     }
@@ -185,6 +183,7 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
 
                 if (slice.type=="count") return slice;
 
+                // named measures - either registered global or inferred
                 if (_.isString(slice.measure)) {
                     if (qb._measures[slice.measure]) {
                         _.extend(slice, qb._measures[slice.measure]);
@@ -196,12 +195,12 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
 
                 // make sure nothing went horribly wrong .. we assume sensible defaults from here
                 _.each(slice.requires, function(prop) {
-                    if (!slice[prop]) throw "urn:oops:qb:slice:missing:"+prop
+                    if (!slice[prop]) throw "oops:d3qb:slice:missing:"+prop
                 })
 
                 qb.chart._sanityCheck(slice);
 
-                // the measure's value accessor
+                // setup the measure's value accessor
                 slice.valueAccessor = _.isString(slice.valueAccessor)?qb.reduce[slice.valueAccessor]:slice.valueAccessor
                 slice.valueAccessor = slice.valueAccessor || qb.accessor.value
 
@@ -217,23 +216,23 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
                 return slice;
             },
 
+            // quick and dirty default slicer
             sliceBy: function(mName, dName) {
-                if (!qb._dimensions) throw "urn:oops:qb:slice:dimensions:not-registered"
-                if (!qb._measures) throw "urn:oops:qb:slice:measures:not-registered"
+                if (!qb._dimensions) throw "oops:d3qb:slice:dimensions:not-registered"
+                if (!qb._measures) throw "oops:d3qb:slice:measures:not-registered"
 
-                if (!dName) throw "urn:oops:qb:slice:missing:dimension#"
-                if (!mName) throw "urn:oops:qb:slice:missing:measure#"
+                if (!dName) throw "oops:d3qb:slice:missing:dimension#"
+                if (!mName) throw "oops:d3qb:slice:missing:measure#"
 
-                // quick and dirty default slicer - using looks
                 return qb._slice({ dimension: dName, measure: mName, by: [mName, dName] });
             },
 
             // draw(type$, measure$, byDimension$)
             // draw(type$, measure{})
             draw: function(type, _slice, _slice_by) {
-                if (!_slice) throw "urn:oops:qb:draw:missing:slice"
+                if (!_slice) throw "oops:d3qb:draw:missing:slice"
                 if (_slice&&_slice_by) _slice = qb.sliceBy(_slice,_slice_by); // quick draw
-                if (!_.isObject(_slice)) throw "urn:oops:qb:draw:missing:slice"
+                if (!_.isObject(_slice)) throw "oops:d3qb:draw:missing:slice"
 
                 if (_slice.disabled) {
                     console.warn("Disabled: %s -> %s by %s", type, _slice.measure, _slice_by || _slice.by);
@@ -248,21 +247,25 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
                 // root element
                 var el = slice.el || "#"+slice.id;
                 var $chart = $(el);
-                if (!$chart.length) {
-                    slice.el = $chart = $("<div/>").addClass( qb.css("qb-chart") );
+                var use_existing_dom = $chart.length?true:false;
 
+//                console.log("Draw Chart [%s] %o / %o / %o / %s", type, slice, _slice, $chart, use_existing_dom);
+
+                // attach to dom if not existing
+                if (!use_existing_dom) {
+                    slice.el = $chart = $("<div/>").addClass( qb.css("qb-chart") );
                     var $el = $(qb.options.el);
                     $chart.appendTo($el);
                     $chart.attr("id", slice.id);
-
-                    console.log("[%s] Chart: %s -> %o", type, slice.id, _slice);
+                    console.log("NEW DOM: %s -> %o", slice.type, slice);
                 }
+
+                // make it pretty
                 $chart.addClass(qb.css("qb-chart-"+type))
 
                 // call chart factory
                 var chart = qb.chart._create(el, slice);
-                console.warn("draw():", slice.id, el, chart);
-
+//                console.warn("draw():", slice.id, el, chart);
 
                 // header & controls
                 if ($chart.length) {
@@ -431,9 +434,24 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
 
                     return slice;
                 },
+                _create: function(el, slice) {
+                    if (!el) throw "oops:d3qb:chart:create:missing:dom-selector";
+                    if (!slice.type) throw "oops:d3qb:chart:create:missing:type";
+                    if (slice.disabled) return false;
+
+                    var charts = Charts(qb);
+                    var Chart = charts[slice.type];
+                    if (!Chart) throw "oops:d3qb:chart:create:missing:chart#"+slice.type;
+                    var _slice = _.extend({}, Chart.defaults, slice);
+                    var chart = Chart.create(el, _slice);
+                    if (!chart) throw "oops:d3qb:chart:create:chart:failed#"+slice.type;
+                    console.log("create [%s] %o -> %o", Chart.title, slice, chart);
+//			return qb.chart[slice.type](el,slice);
+                    return chart;
+                },
                 _sanityCheck: function(slice) {
-                    if (!slice) throw "urn:oops:qb:slice:missing";
-                    if (!_.isObject(slice)) throw "urn:oops:qb:slice:invalid";
+                    if (!slice) throw "oops:d3qb:slice:missing";
+                    if (!_.isObject(slice)) throw "oops:d3qb:slice:invalid";
                 },
 
                 _controls: function(chart) {
@@ -446,7 +464,7 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
 
                 scale: {
                     time: function(chart, slice, axis) {
-                        if (axis&&axis!="x") throw "urn:oops:qb:scale:time:invalid-axis";
+                        if (axis&&axis!="x") throw "oops:d3qb:scale:time:invalid-axis";
                         slice.scale = slice.scale || {}
                         var scale = slice.scale.time || {}
                         axis = axis || "x"
@@ -476,21 +494,6 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
                         axis = axis || "y"
                         chart[axis](d3.scale.log())
                     }
-                },
-                _create: function(el, slice) {
-                    if (!el) throw "urn:oops:qb:chart:create:missing:dom-selector";
-                    if (!slice.type) throw "urn:oops:qb:chart:create:missing:type";
-                    if (slice.disabled) return false;
-
-                    var charts = Charts(qb);
-                    var Chart = charts[slice.type];
-                    if (!Chart) throw "urn:oops:qb:chart:create:missing:chart#"+slice.type;
-                    var _slice = _.extend({}, Chart.defaults, slice);
-                    var chart = Chart.create(el, _slice);
-                    if (!chart) throw "urn:oops:qb:chart:create:chart:failed#"+slice.type;
-                    console.log("create [%s] %o -> %o", Chart.title, slice, chart);
-//			return qb.chart[slice.type](el,slice);
-                    return chart;
                 }
 
             },
@@ -525,10 +528,10 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
             },
 
             _setter: function(dst, src) {
-                if (!_.isObject(dst)&&_.isObject(src)) throw "urn:oops:qb:chart:setter:args:invalid"
+                if (!_.isObject(dst)&&_.isObject(src)) throw "oops:d3qb:chart:setter:args:invalid"
                 _.each(src, function(v,k) {
                     var method = dst[k]
-                        (method && _.isFunction(method) ) && dst[method].apply(dst, [ src[k] ] );
+                    (method && _.isFunction(method) ) && dst[method].apply(dst, [ src[k] ] );
                     console.log("set: ", dst, src, k, v, method)
                 })
                 return dst;

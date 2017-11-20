@@ -12,107 +12,125 @@ _.extend(qbd, {
 		_.extend(qbd.options,options);
         this.DEBUG = options.debug?true:false;
 
-
 		qbd.$el = qbd._createContainerElement(qbd.options);
 		qbd.$el.addClass(qbd.options.css.root);
-        console.log("init qbd(): %o %o -> %o", qbd, qbd.options, qbd.$el)
+        console.log("init qbd(): %o %o -> %o", qbd, qbd.options, qbd.$el);
 
-        // this.DEBUG &&
-        console.log("loaded qbd(): %o %o %o", qbd, qbd.$el, qbd.options)
-
-		this.options.qbd && qbd.loadAll(this.options.qbd)
+		if (this.options.qbd) {
+            // this.DEBUG &&
+            console.log("loading qbd(): %o %o %o", qbd, qbd.$el, qbd.options);
+            qbd.loadAll(this.options.qbd);
+		} else {
+            console.warn("missing dashboards qbd(): %o %o %o", qbd, options);
+		}
 		return this;
 	},
 	qb: function(qb_id) {
- 		if (!qb_id) throw "urn:oops:qbd:qb:missing-id"
+ 		if (!qb_id) throw "urn:oops:qbd:qb:missing-id";
 		var qbd_qb = qbd._qbd[qb_id];
 
-        if (!qbd_qb) throw "urn:oops:qbd:qb:missing#"+qb_id
+        if (!qbd_qb) throw "urn:oops:qbd:qb:missing#"+qb_id;
  		return qbd_qb
  	},
+
+    register: {
+        qb: function(qb_id, qbd_conf) {
+            if (!qb_id) throw "urn:oops:qbd:register:qb:missing:id";
+            if (!qbd_conf) throw "urn:oops:qbd:register:qb:missing:config";
+            qbd._qbd[qb_id] = qb(qbd_conf);
+
+            // safely get our new qb()
+            var _qb = qbd.qb(qb_id);
+
+            this.DEBUG && console.log("registered qb(): ", qb_id, _qb, qbd_conf);
+
+            // global labels
+            _.each(qbd.options.labels, function(labels, label_id) {
+                _qb.register.labels(label_id, labels);
+            });
+            return _qb;
+        }
+    },
+
 	loadAll: function(dashes) {
-        console.log("load all dashboards: %o", dashes);
-		_.each(dashes, function(conf, qbd_id) {
-			conf.id = conf.id || "qbd_"+qbd_id
-			qbd.show(conf)
+        console.log("load all: %o", dashes);
+        if (!_.isArray(dashes)) dashes = [dashes];
+
+		_.each(dashes, function(qb_conf, qbd_id) {
+            qb_conf.id = qb_conf.id || "qbd_"+qbd_id;
+			qbd.load(qb_conf);
 		});
 	},
- 	register: {
-		qb: function(qb_id, qbd_conf) {
-			if (!qb_id) throw "urn:oops:qbd:register:qb:missing:id"
-			if (!qbd_conf) throw "urn:oops:qbd:register:qb:missing:config"
-			qbd._qbd[qb_id] = qb(qbd_conf);
 
-			// safely get our new qb()
-			var _qb = qbd.qb(qb_id);
-
-            this.DEBUG && console.log("registered qb(): ", qb_id, _qb, qbd_conf)
-
-			// global labels
-			_.each(qbd.options.labels, function(labels, label_id) {
-				_qb.register.labels(label_id, labels);
-			})
-			return _qb;
-		},
-	},
-
-	show: function(conf, params) {
+	load: function(conf, params) {
 	    var self = this;
+        this.DEBUG && console.log("load: %s -> %o", conf.id||"no-id", conf);
+
 		qbd._drawHeader(conf);
+		var responseAccessor = conf.responseAccessor || qbd.options.responseAccessor;
+		var responseType = conf.responseType || qbd.options.responseType || "json";
 
-        this.DEBUG && console.log("Dashboard: ", conf.id, conf)
-		var responseAccessor = conf.responseAccessor || qbd.options.responseAccessor
-		var responseType = conf.responseType || qbd.options.responseType || "json"
+		if (_.isString(responseAccessor)) responseAccessor = qbd.responseFormat[responseAccessor];
 
-		if (_.isString(responseAccessor)) responseAccessor = qbd.responseFormat[responseAccessor]
-
-		var $loading = $(conf.loader || ".qb-loading" );
-		var url = conf.url+"?"
+		conf.$loader = $(conf.loader || ".qb-loading" );
+		var url = conf.url+"?";
 
 		_.each(params, function(v,k) {
 			url+=k+"="+encodeURIComponent(v)+"&"
 		})
-		url = url.substring(0,url.length-1)
+		url = url.substring(0,url.length-1);
 
-		$loading.show();
 		// ask the data source
 		if (conf.url && d3[responseType]) {
 			// TODO: optimise re-use of data sources
-            this.DEBUG && console.log("Loading QB %s data: %s", responseType, url);
+            // this.DEBUG &&
+			console.log("Loading QB %s data: %s", responseType, url);
 
+            conf.$loader.show();
             d3[responseType](url, function(response) {
                 //self.DEBUG &&
                 console.log("Loaded QB data: %s %o %o", conf.id, conf, response);
 
-				var data = responseAccessor?responseAccessor(response):response
+				var data = responseAccessor?responseAccessor(response):response;
 				// register() and load() data into qb(), finally .. render()
 				qbd.register.qb(conf.id, conf);
 
-				// REVIEW: what is intent? should it not be a "responseAccessor"
-				if (data[0].data)
-					data = data[0].data;
-
-				if ( (!data || !data.length) && conf.empty) {
-					qbd.drawEmpty(conf);
-				} else {
-                    var _qb = qbd.qb(conf.id);
-					_qb.load(data);
-					qbd.draw(conf);
-					$loading.hide();
-					_qb.render();
+				// REVIEW: what is intent? should it not be a "responseAccessor
+				if (data && data[0] && data[0].data) {
+					console.warn("what is this?");
+                    data = data[0].data;
 				}
+
+				qbd.display(conf, data);
+
 			})
 		}
 
 	},
 
+	display: function(conf, data) {
+        if ( (!data || !data.length) && conf.empty) {
+            console.log("draw empty");
+            qbd.drawEmpty(conf);
+        } else {
+            var _qb = qbd.qb(conf.id);
+            console.log("draw data: %o -> %s", data, typeof data);
+            data = data.splice(100, data.length-100);
+            _qb.load(data);
+            qbd.draw(conf);
+            conf.$loader.hide();
+            _qb.render();
+        }
+	},
+
 	draw: function(conf) {
-        conf.$el = this.element(conf) || qbd.$el;
+		console.log("draw: %o -> %o", conf, qbd.$el);
+        conf.$el = this.element(conf, qbd.$el);
 		if (!conf.$el || !conf.$el.length) throw "urn:oops:qbd:chart:element:missing#"+chart_id;
 
         // draw all configured charts, including container elements
 		// attach them to the conf.el
-		var self = this
+		var self = this;
 		var _qb = qbd.qb(conf.id);
 		_.each(conf.charts, function(chart_conf, chart_id) {
             if (!chart_conf) throw "urn:oops:qbd:chart:config:missing#"+chart_id;
@@ -120,19 +138,22 @@ _.extend(qbd, {
 
 		    //			self.drawChart(chart_conf, conf.el)
 
-			var chart = _qb.draw(chart_conf.type, chart_conf)
-			if (conf.filters) {
-				chart.filter(null)
-				var filters = conf.filters[chart_conf.dimension]
-				_.each(filters, function(filter) {
-					filter && chart.filter(filter)
-				})
+			var chart = _qb.draw(chart_conf.type, chart_conf);
+			if (chart) {
+                if (conf.filters) {
+                    chart.filter(null);
+                    var filters = conf.filters[chart_conf.dimension];
+                    _.each(filters, function(filter) {
+                        filter && chart.filter(filter);
+                    });
 
-                console.log("preset-filter: ", chart_conf.id, filters);
+                    console.log("preset-filter: ", chart_conf.id, filters);
+                }
+                console.log("draw-chart: %o -> %o", chart_conf, chart);
+                chart.$el.addClass(qbd.options.css.qbd);
+                conf.$el.append( chart.$el );
 			}
-//			chart.$el.addClass(qbd.options.css.qbd);
-//		$el && $el.append( conf.el )
-		})
+		});
 		return qbd;
 	},
 
@@ -141,14 +162,15 @@ _.extend(qbd, {
         conf.$el.addClass(qbd.options.css.empty);
         this.DEBUG && console.log("drawEmpty: %o", conf);
 
-		var $panel = $("<div/>").html(conf.empty.template)
-        conf.$el.append( $panel )
+		var $panel = $("<div/>").html(conf.empty.template);
+        conf.$el.append( $panel );
 	},
+
 	drawChart: function(conf) {
-		conf.el = qbd._createContainerElement(conf)
-		conf.el.addClass(qbd.options.css.chart)
-		conf.height && conf.el.height(conf.height+64)
-		conf.width && conf.el.width(conf.width+16)
+		conf.el = qbd._createContainerElement(conf);
+		conf.el.addClass(qbd.options.css.chart);
+		conf.height && conf.el.height(conf.height+64);
+		conf.width && conf.el.width(conf.width+16);
 		return qbd;
 	},
 
@@ -156,7 +178,7 @@ _.extend(qbd, {
 		var _qb = qbd.qb(qb_id);
 		var chart = _qb.draw(type, slice, lazy);
 
-        this.DEBUG && console.log("qbd chart()", chart, qb_id, _qb, type, slice, lazy)
+        this.DEBUG && console.log("qbd chart()", chart, qb_id, _qb, type, slice, lazy);
 		return chart;
 	},
 
@@ -167,12 +189,13 @@ _.extend(qbd, {
 	},
 
 	_drawHeader: function(conf) {
-		conf.$el = qbd._createContainerElement(conf, qbd.options.css.qbd)
-		qbd.$el.append( conf.el );
+		conf.$el = qbd._createContainerElement(conf, qbd.options.css.qbd);
+console.log("drawHeader: %o -> %o", conf, qbd.$el);
+		qbd.$el.append( conf.$el );
         conf.$el.addClass(qbd.options.css.qbd);
 		if (conf.header) {
-			var $panel = $("<div/>").addClass(qbd.options.css.header || "header").html(conf.header)
-            conf.$el.append( $panel )
+			var $panel = $("<div/>").addClass(qbd.options.css.header || "header").html(conf.header);
+            conf.$el.append( $panel );
 		}
 		return qbd;
 	},
@@ -181,9 +204,9 @@ _.extend(qbd, {
 		$("[data-qb]",$(el)).each(function() {
 			var slice = $(this).data();
 			var qb_id = slice.qb;
-			var qbd_qb = qbd.qb(qb_id)
+			var qbd_qb = qbd.qb(qb_id);
 			if (qbd_qb&&slice.type&&slice.measure&&slice.dimension) {
-				slice.el = $(this)
+				slice.el = $(this);
 				qbd_qb.draw(slice.type, slice);
 			} else {
 			    console.warn("invalid qb in DOM");
@@ -192,14 +215,15 @@ _.extend(qbd, {
 		return this;
 	},
 
-    element: function(conf) {
+    element: function(conf, parent) {
         if (conf.$el) {
             console.log("element ($el): %o -> %o", conf, typeof conf.el);
             return conf.$el;
         }
         if (_.isString(conf.el)) {
             console.log("element (el): %o -> %o", conf, typeof conf.el);
-            return conf.$el = $(conf.el);
+            conf.$el = $(conf.el);
+            return conf.$el;
         }
         console.log("element (?): %o -> %o -> %o", conf, typeof conf.el, $(conf.el));
         return $(conf.el);
@@ -227,10 +251,13 @@ _.extend(qbd, {
 	},
 
 	responseFormat: {
-		"scorpio4": function(r) { return r.result },
+        "raw": function(r) { return r },
+        "data": function(r) { return r.data },
+		"result": function(r) { return r.result },
 		"data.gov.au": function(r) { return r.result.records }
 	}
 });
+
 return function(options) {
     return qbd.init(options);
 }

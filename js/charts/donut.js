@@ -21,8 +21,10 @@ define(["underscore", "dc", "d3qb/js/chart" ], function (_, dc, chart) {
                     .slicesCap(slice.slicesCap);
 
                 if (slice.renderLegend) {
-                    chart.legend(/*chart.legend ||*/ dc.legend()
-                                 .horizontal(true).y(370).gap(20).autoItemWidth(true));
+                    // chart.legend ||
+                    var legend  = dc.legend();
+                    legend.x(0).y(10).itemHeight(15).gap(10);
+                    chart.legend(legend);
                 }
 
                 return chart;
