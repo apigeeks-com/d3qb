@@ -89,10 +89,11 @@ _.extend(qbd, {
             conf.$loader.show();
             d3[responseType](url, function(response) {
                 //self.DEBUG &&
-                console.log("Loaded QB data: %s %o %o", conf.id, conf, response);
-
 				var data = responseAccessor?responseAccessor(response):response;
-				// register() and load() data into qb(), finally .. render()
+
+                console.log("Loaded QB data: %s %o (%s records) %o", conf.id, conf, data.length, data);
+
+                // register() and load() data into qb(), finally .. render()
 				qbd.register.qb(conf.id, conf);
 
 				// REVIEW: what is intent? should it not be a "responseAccessor
@@ -115,7 +116,7 @@ _.extend(qbd, {
         } else {
             var _qb = qbd.qb(conf.id);
             console.log("draw data: %o -> %s", data, typeof data);
-            data = data.splice(100, data.length-100);
+//            data = data.splice(100, data.length-100);
             _qb.load(data);
             qbd.draw(conf);
             conf.$loader.hide();

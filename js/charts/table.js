@@ -11,20 +11,28 @@ define(["underscore", "dc", "d3qb/js/chart" ], function (_, dc, chart) {
                 var chart = dc.dataTable(el,qb.id);
                 slice = qb.chart._configure(chart, "table", slice);
                 console.log("Table: ", chart, slice);
+
                 if (slice.dimension) chart.dimension(slice.dimension);
 
                 chart.group(function(g) {
-                    console.log("Tabulate: ", g);
-                    return g.flavor;
+                    if (slice.debug)  console.log("Tabulate: ", g);
+                    return g[slice.dimension];
                 });
 
+                chart.showGroups(slice.showGroups);
+                chart.size(slice.size);
                 slice.columns && chart.columns(slice.columns);
-//			chart.size(10)
+
+                if (slice.sortBy) {
+                    chart.sortBy(function(d) {
+                        return d.sortBy;
+                    });
+                }
                 return chart;
             },
 
             defaults: {
-                width: 800, height: 400
+                width: 800, height: 400, showGroups: false, size: 200
             }
 
         }

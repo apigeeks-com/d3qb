@@ -60,6 +60,7 @@ define(["underscore", "dc"], function (_, dc) {
                 width: 800, height: 400,
                 renderDataPoints: true,
                 renderHorizontalGridLines: false,
+                renderLegend: false,
                 renderArea: false,
                 brushOn: false,
                 elasticX: true,

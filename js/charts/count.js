@@ -18,7 +18,7 @@ define(["underscore", "dc"], function (_, dc) {
                 console.log('Chart Count: %o %o' , slice,  $el);
 
                 chart.html({
-                    some: slice.some || '<div class="qb-filter-stats">showing <strong>%filter-count</strong> of <strong>%total-count</strong> - <button class="btn btn-default btn-sm" data-action="reset">reset</button></div>',
+                    some: slice.some || '<div class="qb-filter-stats">showing <strong>%filter-count</strong> of <strong>%total-count</strong> - <i class="fa clickable fa-close btn-sm" data-action="reset"></i></div>',
                     all: slice.all || '<div class="qb-filter-stats"><strong>%total-count</strong> records</div>'
                 });
 
