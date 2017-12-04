@@ -201,8 +201,8 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
                 qb.chart._sanityCheck(slice);
 
                 // setup the measure's value accessor
-                slice.valueAccessor = _.isString(slice.valueAccessor)?qb.reduce[slice.valueAccessor]:slice.valueAccessor
-                slice.valueAccessor = slice.valueAccessor || qb.accessor.value
+                slice.valueAccessor = _.isString(slice.valueAccessor)?qb.reduce[slice.valueAccessor]:slice.valueAccessor;
+                slice.valueAccessor = slice.valueAccessor || qb.accessor.value;
 
                 // aggregate the measure by dimension
                 // qb.group consumes dimension and group, the 3rd/4th parameters are passed as arguments to the reducer()
@@ -253,19 +253,16 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
 
                 // attach to dom if not existing
                 if (!use_existing_dom) {
-                    slice.el = $chart = $("<div/>").addClass( qb.css("qb-chart") );
+                    slice.el = $chart = $("<div/>");
                     var $el = $(qb.options.el);
                     $chart.appendTo($el);
                     $chart.attr("id", slice.id);
                     console.log("NEW DOM: %s -> %o", slice.type, slice);
                 }
 
-                // make it pretty
-                $chart.addClass(qb.css("qb-chart-"+type))
-
-                // call chart factory
-                var chart = qb.chart._create(el, slice);
-//                console.warn("draw():", slice.id, el, chart);
+                // help to make it pretty
+                $chart.addClass(qb.css("qb-chart-"+type));
+                $chart.addClass( qb.css("qb-chart") );
 
                 // header & controls
                 if ($chart.length) {
@@ -277,6 +274,11 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
                         $("<span class='filter clickable'/>").appendTo($controls);
                     }
                 }
+
+                // call chart factory
+                var chart = qb.chart._create(el, slice);
+//                console.warn("draw():", slice.id, el, chart);
+
 
                 // bind reset/firr handlers
                 if ($chart.length && slice.showControls) {
@@ -371,9 +373,11 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
 
                     var DEBUG = (slice.debug || chart.debug)?true:false;
 
+                    // axis labels
                     if (slice.x && slice.x.label) chart.xAxisLabel(slice.x.label);
                     if (slice.y && slice.y.label) chart.yAxisLabel(slice.y.label);
 
+                    // the basics
                     chart
                         .width(slice.width)
                         .height(slice.height)
@@ -396,11 +400,18 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
                         qb.chart._controls(chart);
                     }
 
-                    if (_.isFunction(slice.filterPrinter)) chart.filterPrinter(slice.filterPrinter)
+                    // filtering
+                    if (_.isFunction(slice.filterPrinter)) {
+                        chart.filterPrinter(slice.filterPrinter);
+                    }
 
-                    slice.renderlet  && chart.renderlet(slice.renderlet);
+                    // support post-render processing
+                    if (_.isFunction(slice.renderlet )) {
+                        chart.renderlet(slice.renderlet);
+                    }
 
                     // Category Labels
+                    // TODO: allow over-ride. Refactor into a public function
                     var Label = function(item) {
                         if (slice.labels) return slice.labels[item.key] || item.key;
                         return item.key || slice.keyAccessor.apply(this,arguments);
@@ -409,10 +420,11 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
 
                     // ToolTips Titles
                     var Title = function(d) {
-                        return slice.title || Label(d)+" = "+(slice.valueAccessor?slice.valueAccessor(d):d.value)
+                        return slice.title || Label(d)+" = "+(slice.valueAccessor?slice.valueAccessor(d):d.value);
                     }
                     slice.renderTitle && chart.title( Title );
 
+                    // key/value accessors (default to dimension/measure field accessors)
                     slice.valueAccessor && chart.valueAccessor(slice.valueAccessor);
                     slice.keyAccessor && chart.keyAccessor(slice.keyAccessor);
 
@@ -422,12 +434,14 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
                         else if (slice.top>0) chart.data(function(group) { return group.top(slice.top) });
                     }
 
+                    // grid lines
                     if (chart.renderHorizontalGridLines)
                         chart.renderHorizontalGridLines(slice.renderHorizontalGridLines);
 
                     if (chart.renderVerticalGridLines)
                         chart.renderVerticalGridLines(slice.renderVerticalGridLines);
 
+                    // spacing and layout
                     chart.gap && chart.gap(slice.gap || 5);
 
                     DEBUG && console.log("configured slice: %s -> %o ", slice.header?slice.header:"untitled", slice );
@@ -439,14 +453,19 @@ define(["underscore", "moment", "crossfilter", "dc", "d3",
                     if (!slice.type) throw "oops:d3qb:chart:create:missing:type";
                     if (slice.disabled) return false;
 
+                    // configure chart factory for this qb
                     var charts = Charts(qb);
+
+                    // find the chart implementation
                     var Chart = charts[slice.type];
                     if (!Chart) throw "oops:d3qb:chart:create:missing:chart#"+slice.type;
+
+                    // generate a default slice
                     var _slice = _.extend({}, Chart.defaults, slice);
                     var chart = Chart.create(el, _slice);
                     if (!chart) throw "oops:d3qb:chart:create:chart:failed#"+slice.type;
                     console.log("create [%s] %o -> %o", Chart.title, slice, chart);
-//			return qb.chart[slice.type](el,slice);
+
                     return chart;
                 },
                 _sanityCheck: function(slice) {

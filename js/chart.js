@@ -2,7 +2,7 @@ define(["underscore", "helpers"], function (_, helpers) {
     return function(options, qb) {
 
         return {
-            _configure: function (chart, type, _slice) {
+            x_configure: function (chart, type, _slice) {
                 var slice = _.extend({type: type, scale: {} }, qb.defaults.all, qb.defaults[type], _slice);
                 qb.chart._sanityCheck(slice);
                 console.log("_configured: ", slice.header ? slice.header : "untitled", slice, qb.defaults.all, qb.defaults[type]);

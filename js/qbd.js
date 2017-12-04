@@ -1,4 +1,4 @@
-define(["jquery", "underscore", "dc", "d3", "qb"], function ($, _, dc, d3, qb) {
+define(["jquery", "underscore", "dc", "d3", "qb", "helpers"], function ($, _, dc, d3, qb, helpers) {
 
 var qbd = {};
 
@@ -12,7 +12,7 @@ _.extend(qbd, {
 		_.extend(qbd.options,options);
         this.DEBUG = options.debug?true:false;
 
-		qbd.$el = qbd._createContainerElement(qbd.options);
+		qbd.$el = helpers.createDOMElement(qbd.options);
 		qbd.$el.addClass(qbd.options.css.root);
         console.log("init qbd(): %o %o -> %o", qbd, qbd.options, qbd.$el);
 
@@ -126,7 +126,7 @@ _.extend(qbd, {
 
 	draw: function(conf) {
 		console.log("draw: %o -> %o", conf, qbd.$el);
-        conf.$el = this.element(conf, qbd.$el);
+        conf.$el = helpers.$(conf, qbd.$el);
 		if (!conf.$el || !conf.$el.length) throw "urn:oops:qbd:chart:element:missing#"+chart_id;
 
         // draw all configured charts, including container elements
@@ -159,7 +159,7 @@ _.extend(qbd, {
 	},
 
 	drawEmpty: function(conf) {
-	    conf.$el = this.element(conf);
+	    conf.$el = helpers.$(conf);
         conf.$el.addClass(qbd.options.css.empty);
         this.DEBUG && console.log("drawEmpty: %o", conf);
 
@@ -167,14 +167,14 @@ _.extend(qbd, {
         conf.$el.append( $panel );
 	},
 
-	drawChart: function(conf) {
-		conf.el = qbd._createContainerElement(conf);
-		conf.el.addClass(qbd.options.css.chart);
-		conf.height && conf.el.height(conf.height+64);
-		conf.width && conf.el.width(conf.width+16);
-		return qbd;
-	},
-
+	// drawChart: function(conf) {
+	// 	conf.el = helpers.createDOMElement(conf);
+	// 	conf.el.addClass(qbd.options.css.chart);
+	// 	conf.height && conf.el.height(conf.height+64);
+	// 	conf.width && conf.el.width(conf.width+16);
+	// 	return qbd;
+	// },
+    //
 	chart : function(qb_id, type, slice, lazy) {
 		var _qb = qbd.qb(qb_id);
 		var chart = _qb.draw(type, slice, lazy);
@@ -190,7 +190,7 @@ _.extend(qbd, {
 	},
 
 	_drawHeader: function(conf) {
-		conf.$el = qbd._createContainerElement(conf, qbd.options.css.qbd);
+		conf.$el = helpers.createDOMElement(conf, qbd.options.css.qbd);
 console.log("drawHeader: %o -> %o", conf, qbd.$el);
 		qbd.$el.append( conf.$el );
         conf.$el.addClass(qbd.options.css.qbd);
@@ -216,40 +216,26 @@ console.log("drawHeader: %o -> %o", conf, qbd.$el);
 		return this;
 	},
 
-    element: function(conf, parent) {
-        if (conf.$el) {
-            console.log("element ($el): %o -> %o", conf, typeof conf.el);
-            return conf.$el;
-        }
-        if (_.isString(conf.el)) {
-            console.log("element (el): %o -> %o", conf, typeof conf.el);
-            conf.$el = $(conf.el);
-            return conf.$el;
-        }
-        console.log("element (?): %o -> %o -> %o", conf, typeof conf.el, $(conf.el));
-        return $(conf.el);
-    },
-
-    _createContainerElement: function(conf, selector) {
-	    var $el = false;
-        if (selector && _.isString(selector)) {
-            $el = $(selector);
-            console.log("container selector: %o -> %o", conf, selector, $el);
-        } else {
-            $el = this.element(conf);
-            console.log("container element: %o -> %o", conf, $el);
-        }
-
-		if (!$el || !$el.length) {
-		    var $old = $el;
-			$el = $("<div/>");
-			conf.id && $el.attr("id", conf.id);
-            console.log("create dom container: %o -> %o -> %o", conf, $el, $old)
-		} else {
-            console.log("append dom container: %o -> %o", conf, $el)
-        }
-		return $el;
-	},
+    // _createContainerElement: function(conf, selector) {
+	//     var $el = false;
+     //    if (selector && _.isString(selector)) {
+     //        $el = $(selector);
+     //        console.log("container selector: %o -> %o", conf, selector, $el);
+     //    } else {
+     //        $el = helpers.$(conf);
+     //        console.log("container element: %o -> %o", conf, $el);
+     //    }
+    //
+	// 	if (!$el || !$el.length) {
+	// 	    var $old = $el;
+	// 		$el = $("<div/>");
+	// 		conf.id && $el.attr("id", conf.id);
+     //        console.log("create dom container: %o -> %o -> %o", conf, $el, $old)
+	// 	} else {
+     //        console.log("append dom container: %o -> %o", conf, $el)
+     //    }
+	// 	return $el;
+	// },
 
 	responseFormat: {
         "raw": function(r) { return r },

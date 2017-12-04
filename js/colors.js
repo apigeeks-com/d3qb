@@ -1,5 +1,7 @@
 define(["underscore", "colorbrewer"], function (_, colorbrewer) {
 
+    // color palettes to match various themes
+
     return {
         "blue": {
             colors: colorbrewer.Blues[9]
